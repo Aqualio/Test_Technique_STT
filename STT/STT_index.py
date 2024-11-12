@@ -55,7 +55,7 @@ def transcription():
         #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     
     try:
-        audio = audio_to_text(audio_file) # FUnction called 
+        audio = audio_to_text(audio_file) # Function called 
         return jsonify({'Text' : audio}), 200 # We show the translated text on the web page
     except sr.UnknownValueError:
         return jsonify({'Error' : 'Could not understand audio'}), 200 
