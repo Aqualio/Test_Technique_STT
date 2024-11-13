@@ -24,3 +24,7 @@ docker run -i -t stt_api_rest:latest
 Ouvrir une page web sur http://127.0.0.1:5000 ou http://172.17.0.2:5000
 
 Upload un ficher .wav 
+
+
+
+Concernant les raisons des choix technologiques 
