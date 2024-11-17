@@ -3,8 +3,6 @@ from flask import Flask, jsonify, request
 from pydub import AudioSegment
 import speech_recognition as sr 
 
-app = Flask(__name__)
-
 ALLOWED_EXTENSIONS = {'wav'}
 
 app = Flask(__name__)
@@ -12,9 +10,6 @@ app = Flask(__name__)
 # We start the recogniser function
 r = sr.Recognizer()
 
-# We get the .wav file 
-#audio_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Audio_Folder/Monologue.wav")
-#audio_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Audio_Folder/DIALOGUE.wav")
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -58,7 +53,7 @@ def transcription():
         #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     
     try:
-        audio = audio_to_text(audio_file) # FUnction called 
+        audio = audio_to_text(audio_file) # Function called 
         return jsonify({'Text' : audio}), 200 # We show the translated text on the web page
     except sr.UnknownValueError:
         return jsonify({'Error' : 'Could not understand audio'}), 200 
