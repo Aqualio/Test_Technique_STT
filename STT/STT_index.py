@@ -1,9 +1,7 @@
 import os 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from pydub import AudioSegment
 import speech_recognition as sr 
-
-app = Flask(__name__)
 
 ALLOWED_EXTENSIONS = {'wav'}
 
@@ -11,7 +9,8 @@ app = Flask(__name__)
 
 # We start the recogniser function
 r = sr.Recognizer()
-
+#GOOGLE_CLOUD_SPEECH_CREDENTIALS = r""" """
+#WIT_AI_KEY = "QORIUELG7IUQMICNRT45J5P7NQZ3ZNTW"
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -23,12 +22,14 @@ def upload_file():
     return '''
     <!doctype html> 
     <head>   
-        <title>upload file : </title>   
+        <title> File Upload </title>
     </head>   
     <body>   
-        <form action = "/transcription" method = "post" enctype="multipart/form-data">   
-            <input type="file" name="file" />   
-            <input type = "submit" value="Upload">   
+        <h1>Speech to text transcription</h1> 
+        <h>Upload Audio file: </h>
+        <form action = "/transcription" method = "post" enctype = "multipart/form-data">   
+            <input type = "file" name = "file" />   
+            <input type = "submit" value = "Upload">   
         </form>   
     </body>   
     </html>
@@ -40,7 +41,10 @@ def audio_to_text(audio):
         
         audio_listened = r.record(source) # We listen to the audio file 
 
-        text = r.recognize_google(audio_listened) # We recognise speech using the Google Speech Recognition API 
+        #text = r.recognize_google(audio_listened) # We recognise speech using the Google Speech Recognition API # Error with flac library using docker, works on local, installing it doesn't fix the problem
+        #text = r.recognize_google_cloud(audio_listened, credentials_json=GOOGLE_CLOUD_SPEECH_CREDENTIALS) # Error Google CLoud Service
+        text = r.recognize_sphinx(audio_listened) # It is not as good as the other but it works.
+        #text = r.recognize_wit(audio_listened, key=WIT_AI_KEY)
         
     return text
 # Main Endpoint
@@ -52,15 +56,15 @@ def transcription():
     
     if file and allowed_file(file.filename): # Checking if the file is the right format
         audio_file = file
-        #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     
     try:
         audio = audio_to_text(audio_file) # Function called 
-        return jsonify({'Text' : audio}), 200 # We show the translated text on the web page
+        return render_template('Result.html', audio=audio)
+    #jsonify({'Text' : audio}), 200 # We show the translated text on the web page
     except sr.UnknownValueError:
-        return jsonify({'Error' : 'Could not understand audio'}), 200 
+        return render_template('Result.html')
     except sr.RequestError as e:
-        return jsonify({'Error' : 'Error Google Cloud Service'}), 200  
+        return render_template('Result_Cloud.html')
 
 # Entry point
 if __name__ == '__main__':
