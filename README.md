@@ -27,4 +27,7 @@ Upload un ficher .wav
 
 
 
-Concernant les raisons des choix technologiques 
+Concernant les raisons des choix technologiques :
+Flask a été utilisée car indispensable pour faire une API REST.
+Pydub est utilisée pour récupérer et modifier des fichiers audio.
+La librairie SpeechRecognition est utilisée pour appeler des API capable de reconaitre et transcrire un fichier audio en texte.
